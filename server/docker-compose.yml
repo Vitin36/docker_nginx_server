@@ -1,0 +1,33 @@
+
+db:
+  image: mariadb
+  ports:
+    - "3306:3306"
+  environment:
+    - MYSQL_ROOT_PASSWORD=password
+
+php:
+  build: .
+  volumes: 
+    - ./../sites:/var/www/html
+  links:
+    - db
+
+nginx:
+  image: nginx:latest
+  ports:
+    - "80:80"
+  volumes:
+    - ./../sites:/var/www/html
+    - ./nginx.conf:/etc/nginx/conf.d/default.conf
+  links:
+    - php
+
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  environment:
+    - PMA_HOST=db
+  links:
+    - db
+  ports:
+    - "81:80"
