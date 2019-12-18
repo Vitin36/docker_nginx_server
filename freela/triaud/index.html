@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>This is the title of the webpage!</title>
+  </head>
+  <body>
+    <button onclick="baixar()">Clique para baixar o arquivo</button>
+  </body>
+</html>
+
+<script>
+  function baixar() {
+    console.log('vamos baixar');
+    var xhr = new XMLHttpRequest();
+
+    xhr.open('GET', 'gerar_contrato.php', true);
+    xhr.responseType = 'blob';
+
+    // Process the response when the request is ready.
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        // Create a binary string from the returned data, then encode it as a data URL.
+        var file = new Blob([this.response], { type: 'application/pdf' });
+        var fileURL = URL.createObjectURL(file);
+        var link = document.createElement('a');
+        link.href = file;
+        link.download = 'file.pdf';
+        link.click();
+        setTimeout(function() {
+          // For Firefox it is necessary to delay revoking the ObjectURL
+          window.URL.revokeObjectURL(file);
+        }, 100);
+      }
+    };
+
+    xhr.send();
+  }
+</script>
